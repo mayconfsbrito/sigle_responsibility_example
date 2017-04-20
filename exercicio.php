@@ -4,18 +4,16 @@ class CalculadoraDeSalario {
 
     public function calcula(Funcionario $funcionario) {
 
-        return $funcionario->getCargo()->getRegra()->calcula($funcionario);
+        if($funcionario->getCargo() instanceof Desenvolvedor) {
+            return $this->dezOuVintePorcento($funcionario);
+        }
+        else if($funcionario->getCargo() instanceof Tester || $funcionario->getCargo() instanceof Dba) {
+            return $this->quinzeOuVinteCincoPorcento($funcionario);
+        }
+
     }
 
-}
-
-interface RegraDeCalculo{
-    public function calcula(Funcionario $funcionario);
-}
-
-class DezOuVintePorcento implements RegraDeCalculo{
-
-    public function calcula(Funcionario $funcionario) {
+    private function dezOuVintePorcento(Funcionario $funcionario) {
 
         if($funcionario->getSalario() > 3000) {
             return $funcionario->getSalario() * 0.8;
@@ -23,35 +21,21 @@ class DezOuVintePorcento implements RegraDeCalculo{
 
         return $funcionario->getSalario() * 0.9;
     }
-}
 
-class QuinzeOuVinteCincoPorcento implements RegraDeCalculo{
-
-    public function calcula(Funcionario $funcionario) {
+    private function quinzeOuVinteCincoPorcento(Funcionario $funcionario) {
 
         if($funcionario->getSalario() > 2000) {
             return $funcionario->getSalario() * 0.75;
         }
 
         return $funcionario->getSalario() * 0.85;
+
     }
 
 }
 
-
 class Cargo {
 
-    private $regra;
-
-    public function __construct(RegraDeCalculo $regra)
-    {
-        $this->regra = $regra;
-    }
-
-    public function getRegra()
-    {
-        return $this->regra;
-    }
 }
 
 class Desenvolvedor extends Cargo {
